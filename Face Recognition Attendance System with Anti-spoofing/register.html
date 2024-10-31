@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Firebase Auth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+
+<body>
+    <form id="MainForm" class="w-50 m-4">
+        <h2 class="mb-3" style="font-size: 3rem"><b>Register User</b></h2>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control ml-5" id="emailInp">
+            <label for="emailInp">Email address (name@example.com)</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="passwordInp">
+            <label for="passwordInp">Password (more than 6 characters)</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="nameInp">
+            <label for="nameInp">Full Name (in upper-case letter)</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="idInp">
+            <label for="idInp">Student ID / Staff ID</label>
+        </div>
+        <div class="form-floating mb-3">
+            <select class="form-select" style="padding-left: 0.75rem;" id="facultyInp" aria-label="Faculty selection" required>
+                <option value="" disabled selected>Select Faculty</option>
+                <option value="FK">FK</option>
+                <option value="FTKEE">FTKEE</option>
+                <option value="FTKMA">FTKMA</option>
+                <option value="FTKPM">FTKPM</option>
+                <option value="PBM">PBM</option>
+            </select>
+            <label for="facultyInp">Faculty</label>
+        </div>        
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="phoneNoInp">
+            <label for="phoneNoInp">Phone Number (without any spaces, e.g.: 01123456789)</label>
+        </div>
+
+        <!-- User Type Selection -->
+        <div class="mb-3 ms-2">
+            <label class="form-label"><b>User Type</b></label>
+            <div>
+                <input type="radio" id="lecturerRadio" name="userType" value="Lecturer" required>
+                <label for="lecturerRadio">Lecturer</label>
+            </div>
+            <div>
+                <input type="radio" id="studentRadio" name="userType" value="Student" required>
+                <label for="studentRadio">Student</label>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="float: right;">Create New User</button>
+        <a href="login.html"><button type="button" class="btn btn-secondary me-2" style="float: right;">Sign In</button></a>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+        import { getDatabase, set, ref } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtqQS5mjw6PPWMyp3WbtQbWSqDs5Bvg-c",
+            authDomain: "facerecognitionattendanc-e41e6.firebaseapp.com",
+            databaseURL: "https://facerecognitionattendanc-e41e6-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "facerecognitionattendanc-e41e6",
+            storageBucket: "facerecognitionattendanc-e41e6.appspot.com",
+            messagingSenderId: "612929420007",
+            appId: "1:612929420007:web:cbb5ad65782555ae77c042"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+        const auth = getAuth(app);
+        
+        let EmailInp = document.getElementById('emailInp');
+        let PassInp = document.getElementById('passwordInp');
+        let NameInp = document.getElementById('nameInp');
+        let IdInp = document.getElementById('idInp');
+        let FacultyInp = document.getElementById('facultyInp');
+        let PhoneNoInp = document.getElementById('phoneNoInp');
+        let MainForm = document.getElementById('MainForm');
+
+        const Registeruser = (evt) => {
+            evt.preventDefault();
+
+            // Check if all required fields are filled
+            if (!EmailInp.value || !PassInp.value || !NameInp.value || !IdInp.value || !FacultyInp.value || !PhoneNoInp.value) {
+                alert("Please fill in all fields.");
+                return; // Exit the function if validation fails
+            }
+
+            // Check password length (example: at least 6 characters)
+            if (PassInp.value.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                return; // Exit the function if validation fails
+            }
+
+            // Check if user type is selected
+            const userTypeInput = document.querySelector('input[name="userType"]:checked');
+            if (!userTypeInput) {
+                alert("Please select a user type (Lecturer or Student).");
+                return; // Exit the function if validation fails
+            }
+            let userType = userTypeInput.value;
+            let userListPath = userType === "Lecturer" ? "LecturerAuthList" : "StudentAuthList";
+
+            // Proceed with user creation if all validations pass
+            createUserWithEmailAndPassword(auth, EmailInp.value, PassInp.value)
+                .then((credentials) => {
+                    // Define user data object
+                    const userData = {
+                        UID: credentials.user.uid,
+                        email: EmailInp.value,
+                        name: NameInp.value,
+                        id: IdInp.value,
+                        faculty: FacultyInp.value,
+                        phoneNo: PhoneNoInp.value
+                    }
+
+                    // Add approvalStatus only for lecturers
+                    if (userType === "Lecturer") {
+                        userData.approvalStatus = "pending";
+                    }
+
+                    // Save user data under the respective node
+                    set(ref(db, `${userListPath}/${credentials.user.uid}`), userData)
+                        .then(() => {
+                            alert("Sign Up Successfully");
+                        })
+                        .catch((error) => {
+                            alert("Error saving user data: " + error.message);
+                        });
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
+        }
+
+        MainForm.addEventListener('submit', Registeruser);
+
+    </script>
+</body>
+
+</html>

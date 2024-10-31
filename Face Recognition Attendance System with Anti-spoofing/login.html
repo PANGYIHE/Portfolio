@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+
+<body>
+    <form id="MainForm" class="w-50 m-4">
+        <h2 class="mb-3" style="font-size: 3rem"><b>User Log In</b></h2>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="emailInp">
+            <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="passwordInp">
+            <label for="floatingPassword">Password</label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="float: right;">Log In</button>
+        <a href="register.html"><button type="button" class="btn btn-secondary me-2" style="float: right;">Sign Up</button></a>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+        import { getDatabase, get, ref, child } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtqQS5mjw6PPWMyp3WbtQbWSqDs5Bvg-c",
+            authDomain: "facerecognitionattendanc-e41e6.firebaseapp.com",
+            databaseURL: "https://facerecognitionattendanc-e41e6-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "facerecognitionattendanc-e41e6",
+            storageBucket: "facerecognitionattendanc-e41e6.appspot.com",
+            messagingSenderId: "612929420007",
+            appId: "1:612929420007:web:cbb5ad65782555ae77c042"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+        const auth = getAuth(app);
+        const dbref = ref(db);
+        
+        const EmailInp = document.getElementById('emailInp');
+        const PassInp = document.getElementById('passwordInp');
+        const MainForm = document.getElementById('MainForm');
+
+        const SignInUser = (evt) => {
+            evt.preventDefault();
+
+            signInWithEmailAndPassword(auth, EmailInp.value, PassInp.value)
+                .then(credentials => {
+                    const uid = credentials.user.uid;
+
+                    // Check in AdminAuthList first
+                    get(child(dbref, 'AdminAuthList/' + uid)).then(snapshot => {
+                        if (snapshot.exists()) {
+                            // User found in AdminAuthList
+                            sessionStorage.setItem("user-info", JSON.stringify({
+                                name: snapshot.val().name
+                            }));
+                            sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                            window.location.href = 'adminHome.html'; // Redirect to admin home page
+                        } else {
+                            // If not an admin, check in LecturerAuthList
+                            return get(child(dbref, 'LecturerAuthList/' + uid));
+                        }
+                    })
+                    .then(snapshot => {
+                        if (snapshot && snapshot.exists()) {
+                            // User found in LecturerAuthList
+                            const userInfo = snapshot.val();
+                            
+                            if (userInfo.approvalStatus === "approved") {
+                                sessionStorage.setItem("user-info", JSON.stringify({
+                                    name: snapshot.val().name
+                                }));
+                                sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                                window.location.href = 'lecturerHome.html'; // Redirect to lecturer home page
+                            } else if (userInfo.approvalStatus === "pending"){
+                                alert("Please wait for account approval.");
+                            } else
+                                alert("Your account registration has been rejected.");
+                        } else {
+                            // If not a lecturer, check in StudentAuthList
+                            return get(child(dbref, 'StudentAuthList/' + uid));
+                        }
+                    })
+                    .then(snapshot => {
+                        if (snapshot && snapshot.exists()) {
+                            // User found in StudentAuthList
+                            sessionStorage.setItem("user-info", JSON.stringify({
+                                name: snapshot.val().name
+                            }));
+                            sessionStorage.setItem("user-creds", JSON.stringify(credentials.user));
+                            window.location.href = 'studentHome.html'; // Redirect to student home page
+                        } 
+                    })
+                    .catch(error => {
+                        console.error("Error checking authorization list:", error);
+                    });
+                })
+                .catch(error => {
+                    alert(error.message);
+                    console.log(error.code);
+                    console.log(error.message);
+                });
+        };
+
+        MainForm.addEventListener('submit', SignInUser);
+    </script>
+</body>
+
+</html>
