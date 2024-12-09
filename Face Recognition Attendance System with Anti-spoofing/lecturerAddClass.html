@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Class</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg" style="background-color: #66CDAA;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#" style="font-size: 1.5rem"><b>Face Recognition Attendance System</b></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="lecturerHome.html">Enrolled Student List</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Add Class</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="lecturerManageClass.html">Manage My Class</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="lecturerStartClass.html">Start Class for Attendance</a>
+              </li>
+          </div>
+            <form class="d-flex" role="search">
+              <button class="btn btn-outline-dark" type="button" id="signOutButton">Sign Out</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container mt-3">
+        <div class="row">
+          <div class="col-11">
+            <input type="text" class="form-control" id="searchBar" placeholder="Search Class Code or Class Name here">
+          </div>
+          <div class="col-1">
+            <button class="btn btn-primary" id="searchBtn">Search</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="container mt-3">
+        <table class="table table-bordered border-success table-hover">
+          <thread>
+            <th>No.</th>
+            <th>Class Code</th>
+            <th>Class Name</th>
+            <th>Action</th>
+          </thread>
+
+          <tbody id="tbody1">
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="actionLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modXButton"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Staff ID</label>
+                <input type="text" class="form-control" id="modId">
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Name</label>
+                <input type="text" class="form-control" id="modName">
+              </div>
+              <div class="mb-3">
+                <label for="modFaculty" class="form-label">Faculty</label>
+                <select class="form-select" id="modFaculty">
+                    <option value="" disabled selected>Select Faculty</option>
+                    <option value="FKOM">FKOM</option>
+                    <option value="FTKEE">FTKEE</option>
+                    <option value="FTKMA">FTKMA</option>
+                    <option value="FTKPM">FTKPM</option>
+                    <option value="PBM">PBM</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
+                <input type="text" class="form-control" id="modPhoneNo">
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Class Code</label>
+                <input type="text" class="form-control" id="modClassCode">
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Class Name</label>
+                <input type="text" class="form-control" id="modClassName">
+              </div>
+              <div class="mb-3">
+                <label for="modLect" class="form-label">Lecturer Section</label>
+                <select class="form-select" id="modLect">
+                      <option value="" disabled selected>Select Lecturer Section</option>
+                      <option value="01">01</option>
+                      <option value="02">02</option>
+                      <option value="03">03</option>
+                </select>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="actionBtn"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+    <script>
+        let UserCreds = JSON.parse(sessionStorage.getItem("user-creds"));
+        let UserInfo = JSON.parse(sessionStorage.getItem("user-info"));
+
+        let MsgHead = document.getElementById('msg');
+        let GreetHead = document.getElementById('greet');
+        let SignOutBtn = document.getElementById('signOutButton');
+
+        let Signout = () => {
+            sessionStorage.removeItem("user-creds");
+            sessionStorage.removeItem("user-info");
+            window. location.href = 'login.html'
+        }
+
+        let CheckCred = () => {
+            if (!sessionStorage.getItem("user-creds"))
+                window.location.href = 'login.html'
+        }
+
+        window.addEventListener('load', CheckCred);
+        SignOutBtn.addEventListener('click', Signout);
+    </script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyCtqQS5mjw6PPWMyp3WbtQbWSqDs5Bvg-c",
+        authDomain: "facerecognitionattendanc-e41e6.firebaseapp.com",
+        databaseURL: "https://facerecognitionattendanc-e41e6-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "facerecognitionattendanc-e41e6",
+        storageBucket: "facerecognitionattendanc-e41e6.appspot.com",
+        messagingSenderId: "612929420007",
+        appId: "1:612929420007:web:cbb5ad65782555ae77c042"
+      };
+
+      const app = initializeApp(firebaseConfig);
+
+      import { getDatabase, ref, child, onValue, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+      import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+
+      const db = getDatabase();
+      const storage = getStorage();
+
+      let UserCreds1 = JSON.parse(sessionStorage.getItem("user-creds"));
+      let UID = UserCreds1.uid;
+
+      let courseCodes = [];
+      let sno = 0;
+      let tbody = document.getElementById('tbody1');
+
+      const selectAllDataOnce = () => {
+          const dbRef = ref(db, 'ClassList/');
+          courseCodes = [];
+
+          get(dbRef).then(snapshot => {
+
+              // Collect course codes
+              snapshot.forEach(childSnapshot => {
+                  const key = childSnapshot.key;
+                      courseCodes.push(childSnapshot.val());
+              });
+
+          }).then(() => {
+              AddAllRecords(); 
+          }).catch(error => {
+              console.error("Error fetching data:", error);
+          });
+      };
+
+      const AddSingleRecord = (code, name) => {
+        let trow = document.createElement('tr');
+        let td1 = document.createElement('td');
+        let td2 = document.createElement('td');
+        let td3 = document.createElement('td');
+        let td4 = document.createElement('td');
+
+        td1.innerHTML = ++sno;
+        td2.innerHTML = code;
+        td3.innerHTML = name;
+
+        let AddButton = document.createElement('button');
+
+        AddButton.id = 'add-' + sno;
+        AddButton.className='btn btn-success me-2';
+        AddButton.innerHTML='<i class="fa-solid fa-plus"></i>'
+        AddButton.setAttribute("data-bs-toggle", 'modal');
+        AddButton.setAttribute("data-bs-target", '#actionModal');
+        AddButton.addEventListener('click', LoadModal);
+
+        td4.append(AddButton);
+
+        trow.append(td1,td2,td3,td4);
+        tbody.append(trow);
+      }
+
+      const AddAllRecords = () => {
+        filteredRows = [];
+        sno=0;
+        tbody.innerHTML = "";
+        courseCodes.forEach(Classs =>{
+          AddSingleRecord(Classs.code, Classs.name)
+        })
+      }
+
+      let modXButton = document.getElementById("modXButton");
+      let actionLabel = document.getElementById("actionLabel");
+      let actionBtn = document.getElementById("actionBtn");
+      let modId = document.getElementById("modId");
+      let modName = document.getElementById("modName");
+      let modFaculty = document.getElementById("modFaculty");
+      let modPhoneNo = document.getElementById("modPhoneNo");
+      let modClassCode = document.getElementById("modClassCode");
+      let modClassName = document.getElementById("modClassName");
+      let modLect = document.getElementById("modLect");
+
+      const LoadModal = (event) => {
+        var targetId = (event.target.id.length > 1) ? event.target.id : event.target.parentElement.id;
+
+        let string = targetId.split('-');
+        let mode = string[0];
+        let selectedIndex = string[1] - 1;
+
+        actionBtn.disabled = false;
+
+        if(mode==='add'){
+            actionBtn.className = 'btn btn-lg btn-success';
+            actionLabel.innerText = 'Add This Class';
+            actionBtn.innerText = 'Add';
+            actionBtn.addEventListener('click', AddData);
+
+            // Fetch user data from Firebase
+            const userRef = ref(db, `LecturerAuthList/${UID}`);
+            get(userRef).then(snapshot => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    modId.value = userData.id || ""; // Set the retrieved ID value
+                    modName.value = userData.name || ""; // Set the retrieved Name value
+                    modFaculty.value = userData.faculty || ""; // Set the retrieved Faculty value
+                    modPhoneNo.value = userData.phoneNo || "";
+                } 
+            }).catch(error => {
+                modId.value = ""; // Set to empty if error occurs
+                modName.value = "";
+                modFaculty.value = "";
+                modPhoneNo.value = "";
+            });
+
+            modClassCode.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].code : courseCodes[selectedIndex].code;
+            modClassName.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].name : courseCodes[selectedIndex].name;
+
+            modId.disabled = true;
+            modName.disabled = true;
+            modFaculty.disabled = true;
+            modPhoneNo.disabled = true;
+            modClassCode.disabled = true;
+            modClassName.disabled = true;
+            modLect.disabled = false;
+        }
+      }
+
+      const AddData = () => {
+        actionBtn.disabled = true;
+
+        set(ref(db, 'LecturerClassList/' + modId.value + '/' + modClassCode.value), {
+            id: modId.value,
+            name: modName.value,
+            faculty: modFaculty.value,
+            phoneNo: modPhoneNo.value,
+            classCode: modClassCode.value,
+            className: modClassName.value,
+            lectSec: modLect.value
+        }).then(() => { 
+            modXButton.click(); 
+            alert(modClassCode.value + " - " + modClassName.value + " has been added");
+        })
+    }
+
+      let filteredRows = [];
+      let searchBar = document.getElementById("searchBar");
+      let searchBtn = document.getElementById("searchBtn");
+
+      const FilterRecords = () => {
+        let searchVal = searchBar.value.toLowerCase().trim();
+        filteredRows = courseCodes.filter(c => 
+        c.code.toString().toLowerCase().trim().includes(searchVal) ||
+        c.name.toString().toLowerCase().trim().includes(searchVal)
+      );
+        
+        sno = 0;
+        tbody.innerHTML = "";
+        filteredRows.forEach(Classs => {
+          AddSingleRecord(Classs.code, Classs.name)
+        })
+      }
+
+      const SearchEmpty = () => {
+        if(searchBar.value.length < 1)
+          AddAllRecords();
+      }
+
+      const SearchEnter = event => {
+        if(event.keyCode === 13)
+          FilterRecords();
+      }
+
+      window.addEventListener('load', selectAllDataOnce);
+      searchBtn.addEventListener('click', FilterRecords);
+      searchBar.addEventListener('input', SearchEmpty);
+      searchBar.addEventListener('keypress', SearchEnter);
+
+    </script>
+  </body>
+</html>

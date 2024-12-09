@@ -15,14 +15,16 @@ data1 = {
         "UID": "q26VDujphDSYhg4XEEClbmVkHuw1",
         "email": "pangyihe@gmail.com",
         "name": "PANG YI HE",
-        "staffID": "CD21074",
+        "faculty": "FKOM",
+        "adminID": "A0001",
         "phoneNo": "01112324468"
     },
     "rffjKKK3inVkLcKfGyvCK43KRjZ2": {
         "UID": "rffjKKK3inVkLcKfGyvCK43KRjZ2",
         "email": "drferda@gmail.com",
         "name": "FERDA ERNAWAN",
-        "staffID": "DRFERDA",
+        "faculty": "FKOM",
+        "adminID": "A0002",
         "phoneNo": "076558846"
     }
 }

@@ -12,10 +12,9 @@ cap.set(4, 720)
 # cap = cv2.VideoCapture("../Videos/motorbikes.mp4")  # For Video
  
  
-model = YOLO("../models/l_version_1_300.pt")
+model = YOLO("../models/best.pt")
  
-classNames = ["fake", "real"
-              ]
+classNames = ["fake", "real"]
  
 prev_frame_time = 0
 new_frame_time = 0
@@ -45,7 +44,7 @@ while True:
                     color = (0,0,255)
            
                 cvzone.cornerRect(img, (x1, y1, w, h), colorC=color, colorR=color)
-                cvzone.putTextRect(img, f'{classNames[cls].upper()} {int(conf*100)}%', (max(0, x1), max(35, y1)), scale=2, thickness=4, colorR=color, colorB=color)
+                # cvzone.putTextRect(img, f'{classNames[cls].upper()} {int(conf*100)}%', (max(0, x1), max(35, y1)), scale=2, thickness=4, colorR=color, colorB=color)
                 
     fps = 1 / (new_frame_time - prev_frame_time)
     prev_frame_time = new_frame_time

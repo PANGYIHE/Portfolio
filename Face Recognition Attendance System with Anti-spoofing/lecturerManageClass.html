@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage My Class</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg" style="background-color: #66CDAA;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#" style="font-size: 1.5rem"><b>Face Recognition Attendance System</b></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="lecturerHome.html">Enrolled Student List</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="lecturerAddClass.html">Add Class</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href=#>Manage My Class</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="lecturerStartClass.html">Start Class for Attendance</a>
+              </li>
+          </div>
+            <form class="d-flex" role="search">
+              <button class="btn btn-outline-dark" type="button" id="signOutButton">Sign Out</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container mt-3">
+        <div class="row">
+          <div class="col-11">
+            <input type="text" class="form-control" id="searchBar" placeholder="Search Class Code, Class Name or Lecturer Section here">
+          </div>
+          <div class="col-1">
+            <button class="btn btn-primary" id="searchBtn">Search</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="container mt-3">
+        <table class="table table-bordered border-success table-hover">
+          <thread>
+            <th>No.</th>
+            <th>Class Code</th>
+            <th>Class Name</th>
+            <th>Lecturer Section</th>
+            <th>Action</th>
+          </thread>
+
+          <tbody id="tbody1">
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="actionLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modXButton"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Class Code</label>
+                <input type="text" class="form-control" id="modCode">
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Class Name</label>
+                <input type="text" class="form-control" id="modName">
+              </div>       
+              <div class="mb-3">
+                <label for="modLect" class="form-label">Lecturer Section</label>
+                <select class="form-select" id="modLect">
+                    <option value="" disabled selected>Select Lecturer Section</option>
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                </select>
+              </div>
+                <div class="modal-footer">
+                  <button type="button" id="actionBtn"></button>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+    <script>
+        let UserCreds = JSON.parse(sessionStorage.getItem("user-creds"));
+        let UserInfo = JSON.parse(sessionStorage.getItem("user-info"));
+
+        let MsgHead = document.getElementById('msg');
+        let GreetHead = document.getElementById('greet');
+        let SignOutBtn = document.getElementById('signOutButton');
+
+        let Signout = () => {
+            sessionStorage.removeItem("user-creds");
+            sessionStorage.removeItem("user-info");
+            window. location.href = 'login.html'
+        }
+
+        let CheckCred = () => {
+            if (!sessionStorage.getItem("user-creds"))
+                window.location.href = 'login.html'
+        }
+
+        window.addEventListener('load', CheckCred);
+        SignOutBtn.addEventListener('click', Signout);
+    </script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyCtqQS5mjw6PPWMyp3WbtQbWSqDs5Bvg-c",
+        authDomain: "facerecognitionattendanc-e41e6.firebaseapp.com",
+        databaseURL: "https://facerecognitionattendanc-e41e6-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "facerecognitionattendanc-e41e6",
+        storageBucket: "facerecognitionattendanc-e41e6.appspot.com",
+        messagingSenderId: "612929420007",
+        appId: "1:612929420007:web:cbb5ad65782555ae77c042"
+      };
+
+      const app = initializeApp(firebaseConfig);
+
+      import { getDatabase, ref, child, onValue, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+      import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+
+      const db = getDatabase();
+      const storage = getStorage();
+
+      let UserCreds1 = JSON.parse(sessionStorage.getItem("user-creds"));
+      let UID = UserCreds1.uid;
+      let userData;
+      const userRef = ref(db, `LecturerAuthList/${UID}`);
+        get(userRef).then(snapshot => {
+              if (snapshot.exists()) {
+                userData = snapshot.val();   
+              }
+          });    
+
+      let classList = [];
+      let sno = 0;
+      let tbody = document.getElementById('tbody1');
+
+      const selectAllDataOnce = () => {
+        // Reference for the current user
+        const userRef = ref(db, `LecturerAuthList/${UID}`);
+        
+        get(userRef).then(snapshot => {
+          if (snapshot.exists()) {
+            const currentUserId = snapshot.val().id; // Get the current user's ID
+            const dbRef = ref(db, 'LecturerClassList/');
+
+            classList = []; // Clear the class list
+
+            get(dbRef).then(snapshot => {
+              snapshot.forEach(childSnapshot => {
+                const lecturerId = childSnapshot.key; // Get the lecturer ID
+
+                if (lecturerId === currentUserId) { // Match the IDs
+                  const classes = childSnapshot.val(); // Get the classes under the lecturer
+                  
+                  Object.keys(classes).forEach(classKey => {
+                    const classData = classes[classKey]; // Access individual class data
+
+                    // Push the entire class data into the classList array
+                    classList.push(classData);
+                  });
+                }
+              });
+
+              AddAllRecords(classList); // Pass the full classList to the AddAllRecords function
+            }).catch(error => {
+              console.error("Error fetching LecturerClassList:", error);
+            });
+          } else {
+            console.error("User not found in LecturerAuthList!");
+          }
+        }).catch(error => {
+          console.error("Error fetching user data:", error);
+        });
+      };
+
+      const AddSingleRecord = (code, name, lectSec) => {
+        let trow = document.createElement('tr');
+        let td1 = document.createElement('td');
+        let td2 = document.createElement('td');
+        let td3 = document.createElement('td');
+        let td4 = document.createElement('td');
+        let td5 = document.createElement('td');
+
+        td1.innerHTML = ++sno;
+        td2.innerHTML = code;
+        td3.innerHTML = name;
+        td4.innerHTML = lectSec;
+
+        let EditButton = document.createElement('button');
+        let DelButton = document.createElement('button');
+
+        EditButton.id = 'edit-' + sno;
+        EditButton.className='btn btn-primary me-2';
+        EditButton.innerHTML='<i class="fa-solid fa-pen-to-square"></i>'
+        EditButton.setAttribute("data-bs-toggle", 'modal');
+        EditButton.setAttribute("data-bs-target", '#actionModal');
+        EditButton.addEventListener('click', LoadModal);
+
+        DelButton.id = 'del-' + sno;
+        DelButton.className='btn btn-danger me-2';
+        DelButton.innerHTML='<i class="fa-solid fa-trash"></i>'
+        DelButton.setAttribute("data-bs-toggle", 'modal');
+        DelButton.setAttribute("data-bs-target", '#actionModal');
+        DelButton.addEventListener('click', LoadModal);
+
+        td5.append(EditButton, DelButton);
+
+        trow.append(td1,td2,td3,td4,td5)
+        tbody.append(trow);
+      }
+
+      const AddAllRecords = () => {
+        filteredRows = [];
+        sno=0;
+        tbody.innerHTML = "";
+        classList.forEach(Clas =>{
+          AddSingleRecord(Clas.classCode, Clas.className, Clas.lectSec)
+        })
+      }
+
+      let modXButton = document.getElementById("modXButton");
+      let actionLabel = document.getElementById("actionLabel");
+      let actionBtn = document.getElementById("actionBtn");
+      let modCode = document.getElementById("modCode");
+      let modName = document.getElementById("modName");
+      let modLect = document.getElementById("modLect");
+
+      const LoadModal = (event) => {
+        var targetId = (event.target.id.length > 1) ? event.target.id : event.target.parentElement.id;
+
+        let string = targetId.split('-');
+        let mode = string[0];
+        let selectedIndex = string[1] - 1; // Adjust index to match array (0-based)
+
+        actionBtn.disabled = false;
+
+        if(mode==='edit'){
+          actionBtn.className = 'btn btn-lg btn-primary';
+          actionLabel.innerText = 'Edit This Class';
+          actionBtn.innerText = 'Update';
+          actionBtn.addEventListener('click', UpdData);
+
+          modCode.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].classCode : classList[selectedIndex].classCode;
+          modName.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].className : classList[selectedIndex].className;
+          modLect.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].lectSec : classList[selectedIndex].lectSec;
+
+          modCode.disabled = true;
+          modName.disabled = true;
+          modLect.disabled = false;
+        }
+        else if(mode==='del'){
+          actionBtn.className = 'btn btn-lg btn-danger';
+          actionLabel.innerText = 'Delete This Class';
+          actionBtn.innerText = 'Comfirm Delete';
+          actionBtn.addEventListener('click', DelData);
+
+          modCode.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].classCode : classList[selectedIndex].classCode;
+          modName.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].className : classList[selectedIndex].className;
+          modLect.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].lectSec : classList[selectedIndex].lectSec;
+
+
+          modCode.disabled = true;
+          modName.disabled = true;
+          modLect.disabled = true;
+        }
+    };
+
+      const UpdData = () => {
+          actionBtn.disabled = true;
+          const userRef = ref(db, `LecturerAuthList/${UID}`);
+          get(userRef).then(snapshot => {
+                if (snapshot.exists()) {
+                  const userData = snapshot.val();
+                  let data = {}
+                  data['LecturerClassList/' + userData.id + '/' + modCode.value + '/classCode'] = modCode.value;
+                  data['LecturerClassList/' + userData.id + '/' + modCode.value + '/className'] = modName.value;
+                  data['LecturerClassList/' + userData.id + '/' + modCode.value + '/lectSec'] = modLect.value;
+                  update(ref(db), data).then(() => { 
+                    modXButton.click(); 
+                    window.location.reload();
+                  })    
+                }
+            });      
+        }
+
+      const DelData = () => {
+          actionBtn.disabled = true;
+          remove(ref(db, 'LecturerClassList/' + userData.id + '/' + modCode.value))
+            .then(() => {
+                modXButton.click();
+                window.location.reload();
+          })
+      };
+
+      let filteredRows = [];
+      let searchBar = document.getElementById("searchBar");
+      let searchBtn = document.getElementById("searchBtn");
+
+      const FilterRecords = () => {
+        let searchVal = searchBar.value.toLowerCase().trim();
+        filteredRows = classList.filter(cl => 
+        cl.classCode.toString().toLowerCase().trim().includes(searchVal) ||
+        cl.className.toString().toLowerCase().trim().includes(searchVal) ||
+        cl.lectSec.toString().toLowerCase().trim().includes(searchVal)
+      );
+        
+        sno = 0;
+        tbody.innerHTML = "";
+        filteredRows.forEach(Clas => {
+          AddSingleRecord(Clas.classCode, Clas.className, Clas.lectSec)
+        })
+      }
+
+      const SearchEmpty = () => {
+        if(searchBar.value.length < 1)
+          AddAllRecords();
+      }
+
+      const SearchEnter = event => {
+        if(event.keyCode === 13)
+          FilterRecords();
+      }
+
+      window.addEventListener('load', selectAllDataOnce);
+      searchBtn.addEventListener('click', FilterRecords);
+      searchBar.addEventListener('input', SearchEmpty);
+      searchBar.addEventListener('keypress', SearchEnter);
+
+    </script>
+  </body>
+</html>
