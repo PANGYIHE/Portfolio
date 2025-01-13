@@ -51,9 +51,9 @@
               <option value="PhoneNo">Phone Number</option>
               <option value="ClassCode">Class Code</option>
               <option value="ClassName">Class Name</option>
-              <option value="LectSect">Lecturer Section</option>
+              <option value="LectSect">Lecture Section</option>
               <option value="LabSect">Lab Section</option>
-              <option value="LectAttendance">Lecturer Total Attendance</option>
+              <option value="LectAttendance">Lecture Total Attendance</option>
               <option value="LabAttendance">Lab Total Attendance</option>
             </select>
           </div>
@@ -73,9 +73,9 @@
             <th>Phone Number</th>
             <th>Class Code</th>
             <th>Class Name</th>
-            <th>Lecturer Section</th>
-            <th>Lecturer Total Attendance</th>
-            <th>Lecturer Last Attendance Time</th>
+            <th>Lecture Section</th>
+            <th>Lecture Total Attendance</th>
+            <th>Lecture Last Attendance Time</th>
             <th>Lab Section</th>
             <th>Lab Total Attendance</th>
             <th>Lab Last Attendance Time</th>
@@ -110,7 +110,7 @@
                 <label for="modFaculty" class="form-label">Faculty</label>
                 <select class="form-select" id="modFaculty">
                     <option value="" disabled selected>Select Faculty</option>
-                    <option value="FKOM">FKOM</option>
+                    <option value="FK">FK</option>
                     <option value="FTKEE">FTKEE</option>
                     <option value="FTKMA">FTKMA</option>
                     <option value="FTKPM">FTKPM</option>
@@ -130,9 +130,9 @@
                 <input type="text" class="form-control" id="modClassName">
               </div>
               <div class="mb-3">
-                <label for="modLect" class="form-label">Lecturer Section</label>
+                <label for="modLect" class="form-label">Lecture Section</label>
                 <select class="form-select" id="modLect">
-                    <option value="" disabled selected>Select Lecturer Section</option>
+                    <option value="" disabled selected>Select Lecture Section</option>
                     <option value="01">01</option>
                     <option value="02">02</option>
                     <option value="03">03</option>
@@ -154,7 +154,7 @@
                 </select>
               </div>
               <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Lecturer Section Total Attendance</label>
+                <label for="exampleFormControlInput1" class="form-label">Lecture Section Total Attendance</label>
                 <input type="text" class="form-control" id="modLectAttendance">
               </div>
               <div class="mb-3">
@@ -251,11 +251,16 @@
                   snapshot.forEach((student) => {
                     if (student.key !== 'code' && student.key !== 'name') {
                       const studentData = student.val(); // Get the student's data
-                      const lecturerData = lecturerCourses[courseCode]; // Get the lecturer's course data
-
-                      // Compare `lectSec` between lecturer's data and student's data
-                      if (lecturerData.lectSec === studentData.lectSec) {
-                        studentList.push(studentData); // Only push if `lectSec` matches
+                      
+                      // Now, iterate through each section of the course (lectSec is nested under course code)
+                      const courseSections = lecturerCourses[courseCode];
+                      for (let sectionKey in courseSections) {
+                        const lecturerData = courseSections[sectionKey]; // Get the lecturer's section data
+                        
+                        // Compare `lectSec` between lecturer's data and student's data
+                        if (lecturerData.lectSec === studentData.lectSec) {
+                          studentList.push(studentData); // Only push if `lectSec` matches
+                        }
                       }
                     }
                   });
@@ -274,7 +279,7 @@
           .catch((error) => {
             console.error("Error fetching data:", error);
           });
-      };
+    };
 
 
       const AddSingleRecord = (id, name, faculty, phoneNo, classCode, className, lectSec, lect_attendance, lect_last_attendance, labSec, lab_attendance, lab_last_attendance) => {

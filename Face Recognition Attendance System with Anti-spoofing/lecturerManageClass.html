@@ -40,7 +40,7 @@
       <div class="container mt-3">
         <div class="row">
           <div class="col-11">
-            <input type="text" class="form-control" id="searchBar" placeholder="Search Class Code, Class Name or Lecturer Section here">
+            <input type="text" class="form-control" id="searchBar" placeholder="Search Class Code, Class Name or Lecture Section here">
           </div>
           <div class="col-1">
             <button class="btn btn-primary" id="searchBtn">Search</button>
@@ -54,7 +54,7 @@
             <th>No.</th>
             <th>Class Code</th>
             <th>Class Name</th>
-            <th>Lecturer Section</th>
+            <th>Lecture Section</th>
             <th>Action</th>
           </thread>
 
@@ -82,9 +82,9 @@
                 <input type="text" class="form-control" id="modName">
               </div>       
               <div class="mb-3">
-                <label for="modLect" class="form-label">Lecturer Section</label>
+                <label for="modLect" class="form-label">Lecture Section</label>
                 <select class="form-select" id="modLect">
-                    <option value="" disabled selected>Select Lecturer Section</option>
+                    <option value="" disabled selected>Select Lecture Section</option>
                     <option value="01">01</option>
                     <option value="02">02</option>
                     <option value="03">03</option>
@@ -165,7 +165,7 @@
           if (snapshot.exists()) {
             const currentUserId = snapshot.val().id; // Get the current user's ID
             const dbRef = ref(db, 'LecturerClassList/');
-
+            
             classList = []; // Clear the class list
 
             get(dbRef).then(snapshot => {
@@ -175,11 +175,17 @@
                 if (lecturerId === currentUserId) { // Match the IDs
                   const classes = childSnapshot.val(); // Get the classes under the lecturer
                   
-                  Object.keys(classes).forEach(classKey => {
-                    const classData = classes[classKey]; // Access individual class data
+                  // Iterate over the courses in the lecturer's class list
+                  Object.keys(classes).forEach(courseCode => {
+                    const courseSections = classes[courseCode]; // Sections for this course
 
-                    // Push the entire class data into the classList array
-                    classList.push(classData);
+                    // Now loop through each section (e.g., A, B, etc.)
+                    Object.keys(courseSections).forEach(sectionKey => {
+                      const classData = courseSections[sectionKey]; // Access individual class section data
+
+                      // Push the entire class section data into the classList array
+                      classList.push(classData);
+                    });
                   });
                 }
               });
@@ -212,13 +218,6 @@
         let EditButton = document.createElement('button');
         let DelButton = document.createElement('button');
 
-        EditButton.id = 'edit-' + sno;
-        EditButton.className='btn btn-primary me-2';
-        EditButton.innerHTML='<i class="fa-solid fa-pen-to-square"></i>'
-        EditButton.setAttribute("data-bs-toggle", 'modal');
-        EditButton.setAttribute("data-bs-target", '#actionModal');
-        EditButton.addEventListener('click', LoadModal);
-
         DelButton.id = 'del-' + sno;
         DelButton.className='btn btn-danger me-2';
         DelButton.innerHTML='<i class="fa-solid fa-trash"></i>'
@@ -226,7 +225,7 @@
         DelButton.setAttribute("data-bs-target", '#actionModal');
         DelButton.addEventListener('click', LoadModal);
 
-        td5.append(EditButton, DelButton);
+        td5.append(DelButton);
 
         trow.append(td1,td2,td3,td4,td5)
         tbody.append(trow);
@@ -257,21 +256,7 @@
 
         actionBtn.disabled = false;
 
-        if(mode==='edit'){
-          actionBtn.className = 'btn btn-lg btn-primary';
-          actionLabel.innerText = 'Edit This Class';
-          actionBtn.innerText = 'Update';
-          actionBtn.addEventListener('click', UpdData);
-
-          modCode.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].classCode : classList[selectedIndex].classCode;
-          modName.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].className : classList[selectedIndex].className;
-          modLect.value = (filteredRows.length > 0) ? filteredRows[selectedIndex].lectSec : classList[selectedIndex].lectSec;
-
-          modCode.disabled = true;
-          modName.disabled = true;
-          modLect.disabled = false;
-        }
-        else if(mode==='del'){
+        if(mode==='del'){
           actionBtn.className = 'btn btn-lg btn-danger';
           actionLabel.innerText = 'Delete This Class';
           actionBtn.innerText = 'Comfirm Delete';
@@ -288,27 +273,9 @@
         }
     };
 
-      const UpdData = () => {
-          actionBtn.disabled = true;
-          const userRef = ref(db, `LecturerAuthList/${UID}`);
-          get(userRef).then(snapshot => {
-                if (snapshot.exists()) {
-                  const userData = snapshot.val();
-                  let data = {}
-                  data['LecturerClassList/' + userData.id + '/' + modCode.value + '/classCode'] = modCode.value;
-                  data['LecturerClassList/' + userData.id + '/' + modCode.value + '/className'] = modName.value;
-                  data['LecturerClassList/' + userData.id + '/' + modCode.value + '/lectSec'] = modLect.value;
-                  update(ref(db), data).then(() => { 
-                    modXButton.click(); 
-                    window.location.reload();
-                  })    
-                }
-            });      
-        }
-
       const DelData = () => {
           actionBtn.disabled = true;
-          remove(ref(db, 'LecturerClassList/' + userData.id + '/' + modCode.value))
+          remove(ref(db, 'LecturerClassList/' + userData.id + '/' + modCode.value + '/' + modLect.value))
             .then(() => {
                 modXButton.click();
                 window.location.reload();
