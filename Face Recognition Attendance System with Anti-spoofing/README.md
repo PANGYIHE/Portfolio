@@ -1,4 +1,4 @@
-<p align="center"><h1>Face Recognition Attendance System with Anti-Spoofing</h1></p>
+# Face Recognition Attendance System with Anti-Spoofing
 
 A final year project that implements a secure, AI-powered student attendance system using face recognition combined with anti-spoofing detection to prevent fraudulent check-ins.
 
@@ -26,7 +26,7 @@ Database & Auth (Firebase Realtime Database, Firebase Authentication)
 ![System Architecture](image/README/FYP-Design-FYP2-Activity-System.svg)
 ![Screenshot Examples](image/README/System_Flow.png)
 
-# Website
+### Website
 Administrator:
 ![Screenshot Examples](image/README/admin.png)
 
