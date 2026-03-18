@@ -1,4 +1,0 @@
-#email automation
-EMAIL_FROM=
-EMAIL_APP_PASSWORD=
-EMAIL_TO=
