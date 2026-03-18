@@ -1,7 +1,7 @@
 # Project Portfolio
 
 ## Data & Analytics Projects
-- **Transaction & Refund Analysis System**  
+- **Transaction & Refund Analysis**  
   (Data generation, SQL querying, Python ETL pipeline, PHP automation, Power BI dashboard)
 
 - **Liver Disease Classification**  
@@ -10,7 +10,7 @@
 - **Impact of Household Income on Crime in Malaysia**  
   (Interactive dashboard using Looker Studio)
 
-- **Face Recognition Attendance System (Data Pipeline)**  
+- **Face Recognition Attendance System's YOLOv8 model training**  
   (Data collection, preprocessing, dataset splitting, YOLOv8 model training)
 
 ---
@@ -22,7 +22,7 @@
 - **Web Engineering System**  
   (PHP, HTML, CSS, JavaScript, MySQL)
 
-- **Face Recognition Attendance Web App**  
+- **Face Recognition Attendance System's Website**  
   (HTML, JavaScript, Bootstrap, Firebase)
 
 ---
