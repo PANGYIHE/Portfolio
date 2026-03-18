@@ -6,7 +6,7 @@ This project demonstrates an end-to-end data workflow including data generation,
 It simulates a payment system environment and builds automated reporting pipelines for transaction and refund analytics.
 
 
-## 🔧 Project Components
+## Project Components
 
 ### 1. Data Generation (Seeder Bot)
 - Built using Python
