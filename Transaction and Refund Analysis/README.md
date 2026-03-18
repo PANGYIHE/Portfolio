@@ -33,7 +33,7 @@ It simulates a payment system environment and builds automated reporting pipelin
   - Refund rate and processing time analysis
   - Currency conversion measures
 - Uses advanced DAX for calculations and ranking
-
+![Screenshot Examples](image/README/powerbi.png)
 
 ## Purpose
 This project demonstrates skills in:
