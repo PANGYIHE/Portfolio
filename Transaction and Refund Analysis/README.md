@@ -27,11 +27,11 @@ It simulates a payment system environment and builds automated reporting pipelin
 ### 4. Business Intelligence Dashboard
 - Developed interactive Power BI report
 - Includes:
-  - KPI cards
+  - Metric cards
   - Transaction and refund analysis
-  - Merchant drill-down
   - Refund rate and processing time analysis
-  - Currency conversion measures
+  - Merchant drill-down
+  - Refund breakdown by merchant, transaction channel, and each transaction
 - Uses advanced DAX for calculations and ranking
 ![Screenshot Examples](image/README/powerbi.png)
 
