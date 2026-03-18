@@ -23,9 +23,7 @@ Database & Auth (Firebase Realtime Database, Firebase Authentication)
 
 ## System Architecture
 
-![System Architecture](image/README/FYP-Design-FYP2-Activity-System.svg)
-
-<img src="image/README/System_Flow.png" width="50%">
+<img src="image/README/FYP-Design-FYP2-Activity-System.svg" width="50%"><img src="image/README/System_Flow.png" width="50%">
 
 ### Website
 Administrator:
