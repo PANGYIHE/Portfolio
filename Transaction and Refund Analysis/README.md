@@ -1,7 +1,7 @@
 # Transaction and Refund Data Engineering & Automation Project
 
 ## Overview
-This project demonstrates an end-to-end data workflow including data generation, ETL processing, automation, and business intelligence reporting.
+This project demonstrates an end-to-end data workflow including data generation, ETL processing, automation, business intelligence reporting, and Excel-based analysis.
 
 It simulates a payment system environment and builds automated reporting pipelines for transaction and refund analytics.
 
@@ -36,10 +36,16 @@ It simulates a payment system environment and builds automated reporting pipelin
 
 ![Screenshot Examples](image/README/powerbi.png)
 
+### 5. Excel Data Analysis
+- Built analytical reports using PivotTables and calculated measures
+- Applied lookup formulas (VLOOKUP) to join transaction and refund datasets
+- Analyzed refund rates, number and amount of successful transactions, and refunds for each merchant
+
 ## Purpose
 This project demonstrates skills in:
 - Data Engineering (ETL)
 - Automation
 - Database management
 - Business Intelligence
+- Excel-based data analysis and reporting
 - Financial data analysis

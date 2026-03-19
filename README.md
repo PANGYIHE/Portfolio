@@ -2,7 +2,7 @@
 
 ## Data & Analytics Projects
 - **Transaction & Refund Analysis**  
-  (Data generation, SQL querying, Python ETL pipeline, PHP automation, Power BI dashboard)
+  (Data generation, SQL querying, Python ETL pipeline, PHP automation, Power BI dashboard, Excel PivotTable)
 
 - **Liver Disease Classification**  
   (Neural network machine learning model)
