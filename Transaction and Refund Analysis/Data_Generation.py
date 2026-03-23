@@ -148,6 +148,8 @@ for _, row in refund_txns.iterrows():
     # --- Delay rules ---
     channel_type = channel_to_type_mapping.get(channel, "")
 
+    create_date = tran_date + timedelta(days=random.randint(0,3))
+
     if channel_type == "Online Bank":
         delay_days = random.randint(7,10)
     elif channel_type == "E-wallet":
@@ -155,17 +157,27 @@ for _, row in refund_txns.iterrows():
     else:
         delay_days = random.randint(0,3)
 
-    refund_date = tran_date + timedelta(days=delay_days)
+    refund_date = create_date + timedelta(days=delay_days)
 
     # --- Status rule ---
-    if refund_date > (datetime(2025,12,31) - timedelta(days=7)):
-        status = 'pending'
-        refund_date = ''
+    if row['status'] == 'cancelled':
+            status = 'completed'
+            create_date = tran_date
+            refund_date = tran_date
     else:
-        status = random.choices(
-            ['completed','cancelled','failed'],
-            weights=[0.8,0.19,0.01]
-        )[0]
+        if create_date > datetime(2025,12,31):
+            status = 'pending'
+            create_date = tran_date
+            refund_date = ''
+        else:
+            if refund_date > datetime(2025,12,31):
+                status = 'pending'
+                refund_date = ''
+            else:
+                status = random.choices(
+                    ['completed','cancelled','failed'],
+                    weights=[0.8,0.19,0.01]
+                )[0]
 
     # --- Partial vs Full Refund ---
     if random.random() < 0.143:  
@@ -179,8 +191,10 @@ for _, row in refund_txns.iterrows():
     refunds.append({
         'refund_id': fake.uuid4(),
         'tran_id': tran_id,
+        'channel': channel,
         'amount': refund_amount,
-        'date': refund_date,
+        'create_date': create_date,
+        'refund_date': refund_date,
         'reason': random.choices(
             list(refund_reason_weights.keys()),
             weights=refund_reason_weights.values()
@@ -221,7 +235,7 @@ for _, row in transactions_df.iterrows():
 transaction_info_df = pd.DataFrame(transaction_info)
 
 # --- Save ---
-output_folder = '--OTHER CODES--/Transaction Refund Analysis/csv_file'
+output_folder = 'Transaction and Refund Analysis/csv_file'
 os.makedirs(output_folder, exist_ok=True)
 
 merchants_df.to_csv(f'{output_folder}/merchants.csv', index=False)

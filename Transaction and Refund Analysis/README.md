@@ -22,6 +22,7 @@ It simulates a payment system environment and builds automated reporting pipelin
 ### 3. Report Automation (PHP)
 - Queries database using SQL
 - Generates daily top-merchant sales Excel reports
+- Generates weekly merchant refund rate Excel reports
 - Automates email delivery using SMTP
 
 ### 4. Business Intelligence Dashboard

@@ -2,17 +2,7 @@ import pandas as pd
 import sqlite3
 from datetime import datetime, timedelta
 
-mer_df = pd.read_csv("--OTHER CODES--/Transaction Refund Analysis/csv_file/merchants.csv")
-refund_df = pd.read_csv("--OTHER CODES--/Transaction Refund Analysis/csv_file/refunds.csv")
-tran_info_df = pd.read_csv("--OTHER CODES--/Transaction Refund Analysis/csv_file/transaction_info.csv")
-tran_df = pd.read_csv("--OTHER CODES--/Transaction Refund Analysis/csv_file/transactions.csv")
-
-conn = sqlite3.connect("--OTHER CODES--/Transaction Refund Analysis/payments.db")
-
-mer_df.to_sql("merchants", conn, index=False, if_exists='replace')
-refund_df.to_sql("refunds", conn, index=False, if_exists='replace')
-tran_info_df.to_sql("transaction_info", conn, index=False, if_exists='replace')
-tran_df.to_sql("transactions", conn, index=False, if_exists='replace')
+conn = sqlite3.connect("Transaction and Refund Analysis/payments.db")
 
 def convert_currency_to_MYR(dataframe):
     rates = {
@@ -77,7 +67,7 @@ converted_df.to_sql(
 conn.commit()
 conn.close()
 
-file = f"--OTHER CODES--/Transaction Refund Analysis/csv_file/{last_week_str} to {yesterday.strftime('%d')} txn_summary.csv"
+file = f"Transaction and Refund Analysis/csv_file/{last_week_str} to {yesterday.strftime('%d')} txn_summary.csv"
 converted_df.to_csv(file, index=False)
 
 print("Report generated:", file)
